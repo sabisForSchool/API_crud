@@ -1,13 +1,8 @@
 import pg from "pg";
 
-const senha = process.env.SENHA;
-const host = process.env.HOST;
-const matricula = process.env.MATRICULA;
-
 async function conectar() {
   const pool = new pg.Pool({
-    //criando o nosso mando de dados
-    connectionString: `postgres://aluno_${matricula}:${senha}@${host}:5439/temp?schema=aluno_${matricula}`,
+    connectionString: `postgres://aluno_20201214010012:126925@177.136.201.182:5439/temp?schema=aluno_20201214010012`,
   });
   const conexaoBancoDeDados = await pool.connect();
   console.log("Banco de dados conectado!");
