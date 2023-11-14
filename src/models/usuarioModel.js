@@ -1,12 +1,6 @@
 import conexaoBancoDeDados from "../database/db_connection.js";
 
 class usuarioModel {
-  async logar(email, senha) {
-    const conexao = await conexaoBancoDeDados.conectar();
-    const comandoSql = "SELECT * FROM usuarios WHERE email = $1 AND senha = $2";
-    const res = await conexao.query(comandoSql, [email, senha]);
-    return res.rows;
-  }
   async listar() {
     const conexao = await conexaoBancoDeDados.conectar();
     const comandoSql = "SELECT * FROM usuarios";
