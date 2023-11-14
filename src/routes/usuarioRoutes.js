@@ -5,5 +5,7 @@ const routes = new Router();
 
 routes
   .post("/login", usuarioController.login)
+  .post("/cadastro", usuarioController.cadastrar)
   .get("/", usuarioController.listar);
+
 export default routes;
