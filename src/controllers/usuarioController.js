@@ -3,6 +3,12 @@ import usuarioModel from "../models/usuarioModel.js";
 class UsuarioController {
   async login(req, res) {
     const { email, senha } = req.body;
+    if (!email) {
+      return res.status(400).send({ message: "Digite seu email" });
+    }
+    if (!senha) {
+      return res.status(400).send({ message: "Digite sua senha" });
+    }
     try {
       const usuario = await usuarioModel.logar(email, senha);
       if (usuario.length == 0) {
@@ -21,6 +27,23 @@ class UsuarioController {
       return res
         .status(500)
         .send({ message: `Erro ao listar usuários - ${error}` });
+    }
+  }
+  async cadastrar(req, res) {
+    const { email, senha } = req.body;
+    if (!email) {
+      return res.status(400).send({ message: "Digite seu email" });
+    }
+    if (!senha) {
+      return res.status(400).send({ message: "Digite sua senha" });
+    }
+    try {
+      await usuarioModel.cadastrar(email, senha);
+      return res
+        .status(201)
+        .send({ message: "Usuário cadastrado com sucesso" });
+    } catch (error) {
+      res.status(400).send({ message: `Erro ao cadastrar Usuário - ${error}` });
     }
   }
 }
