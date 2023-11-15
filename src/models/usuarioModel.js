@@ -9,9 +9,26 @@ class usuarioModel {
   }
   async cadastrar(email, senha) {
     const conexao = await conexaoBancoDeDados.conectar();
-    const comandoSql = `INSERT INTO Usuario (email, senha) VALUES ('${email}, '${senha}'
-    )`;
-    return await conexao.query(comandoSql);
+    const comandoSql = "INSERT INTO usuarios (email, senha) VALUES ($1, $2)";
+    console.log(comandoSql);
+    return await conexao.query(comandoSql, [email, senha]);
+  }
+  async buscarPorId(id) {
+    const conexao = await conexaoBancoDeDados.conectar();
+    const comandoSql = "SELECT * FROM Usuario WHERE id = ($1)";
+    return await conexao.query(comandoSql, [id]);
+  }
+  async listarPedidos(idUsuario) {
+    const conexao = await conexaoBancoDeDados.conectar();
+    const comandoSql = "SELECT * FROM pedidos WHERE id_usuario = ($1)";
+    const pedidos = await conexao.query(comandoSql, [idUsuario]);
+    return pedidos.rows;
+  }
+  async buscaProduto(idProduto) {
+    const conexao = await conexaoBancoDeDados.conectar();
+    const comandoSql = "SELECT nome, preco FROM cardapio WHERE id = ($1)";
+    const produto = await conexao.query(comandoSql, [idProduto]);
+    return produto.rows;
   }
 }
 export default new usuarioModel();
