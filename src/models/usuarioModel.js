@@ -10,7 +10,6 @@ class usuarioModel {
   async cadastrar(email, senha) {
     const conexao = await conexaoBancoDeDados.conectar();
     const comandoSql = "INSERT INTO usuarios (email, senha) VALUES ($1, $2)";
-    console.log(comandoSql);
     return await conexao.query(comandoSql, [email, senha]);
   }
   async buscarPorId(id) {
@@ -29,6 +28,19 @@ class usuarioModel {
     const comandoSql = "SELECT nome, preco FROM cardapio WHERE id = ($1)";
     const produto = await conexao.query(comandoSql, [idProduto]);
     return produto.rows;
+  }
+  async deletarPedido(idPedido) {
+    const conexao = await conexaoBancoDeDados.conectar();
+    const comandoSql = "DELETE FROM pedidos WHERE id_pedido = ($1)";
+    const resp = await conexao.query(comandoSql, [idPedido]);
+    console.log(resp);
+    return resp;
+  }
+  async fazerPedido(idProduto, observacao, idUsuario) {
+    const conexao = await conexaoBancoDeDados.conectar();
+    const comandoSql =
+      "INSERT INTO pedidos (id_produto, id_usuario, observacao) VALUES ($1, $2, $3)";
+    return await conexao.query(comandoSql, [idProduto, idUsuario, observacao]);
   }
 }
 export default new usuarioModel();

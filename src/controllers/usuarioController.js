@@ -12,7 +12,6 @@ class UsuarioController {
     }
   }
   async cadastrar(req, res) {
-    console.log("oi");
     const { email, senha } = req.body;
     if (!email) {
       return res.status(400).send({ message: "Digite seu email" });
@@ -36,23 +35,47 @@ class UsuarioController {
       if (pedidos.length === 0) {
         return res.status(404).send({ pedidos: false, message: "Sem pedidos" });
       }
-
-      let precoTotal = 0;
-      let nomesProdutos = [];
+      const listaPedidos = [];
 
       for (let pedido of pedidos) {
+        console.log(pedido);
         const produto = await usuarioModel.buscaProduto(pedido.id_produto);
-        precoTotal += produto[0].preco;
-        nomesProdutos.push(produto[0].nome);
+        listaPedidos.push({
+          nome: produto[0].nome,
+          preco: produto[0].preco,
+          observacao: pedido.observacao,
+          id: pedido.id_pedido,
+        });
       }
-
-      return res
-        .status(200)
-        .send({ preco: precoTotal, produtos: nomesProdutos });
+      return res.status(200).send(listaPedidos);
     } catch (error) {
       return res
         .status(500)
         .send({ message: `Erro ao listar pedidos - ${error}` });
+    }
+  }
+  async deletarPedido(req, res) {
+    try {
+      const idDoPedido = parseInt(req.params.id);
+      console.log(idDoPedido);
+      const resp = await usuarioModel.deletarPedido(idDoPedido);
+      res.status(500).send({ message: "Deletado com sucesso" });
+    } catch (error) {
+      res.status(500).send({ message: `Erro ao deletar pedido - ${error}` });
+    }
+  }
+  async fazerPedido(req, res) {
+    const { idProduto, observacao, idUsuario } = req.body;
+    try {
+      const retorno = await usuarioModel.fazerPedido(
+        idProduto,
+        observacao,
+        idUsuario
+      );
+      console.log(retorno);
+      res.status(200).send({ message: "Pedido enviado com Sucesso!" });
+    } catch (error) {
+      res.status(500).send({ message: `Erro ao enviar pedido - ${error}` });
     }
   }
 }

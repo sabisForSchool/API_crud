@@ -6,6 +6,8 @@ const routes = new Router();
 routes
   .get("/", usuarioController.listar)
   .get("/pedidos/:id", usuarioController.listarPedidos)
-  .post("/cadastro", usuarioController.cadastrar);
+  .post("/cadastro", usuarioController.cadastrar)
+  .post("/fazerPedido", usuarioController.fazerPedido)
+  .delete("/deletarPedido/:id", usuarioController.deletarPedido);
 
 export default routes;
