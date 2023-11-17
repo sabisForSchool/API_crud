@@ -23,9 +23,15 @@ class usuarioModel {
     const pedidos = await conexao.query(comandoSql, [idUsuario]);
     return pedidos.rows;
   }
+  async listarUmPedido(idPedido) {
+    const conexao = await conexaoBancoDeDados.conectar();
+    const comandoSql = "SELECT * FROM pedidos WHERE id_pedido = ($1)";
+    const pedido = await conexao.query(comandoSql, [idPedido]);
+    return pedido.rows;
+  }
   async buscaProduto(idProduto) {
     const conexao = await conexaoBancoDeDados.conectar();
-    const comandoSql = "SELECT nome, preco FROM cardapio WHERE id = ($1)";
+    const comandoSql = "SELECT * FROM cardapio WHERE id = ($1)";
     const produto = await conexao.query(comandoSql, [idProduto]);
     return produto.rows;
   }
@@ -33,7 +39,6 @@ class usuarioModel {
     const conexao = await conexaoBancoDeDados.conectar();
     const comandoSql = "DELETE FROM pedidos WHERE id_pedido = ($1)";
     const resp = await conexao.query(comandoSql, [idPedido]);
-    console.log(resp);
     return resp;
   }
   async fazerPedido(idProduto, observacao, idUsuario) {
@@ -41,6 +46,22 @@ class usuarioModel {
     const comandoSql =
       "INSERT INTO pedidos (id_produto, id_usuario, observacao) VALUES ($1, $2, $3)";
     return await conexao.query(comandoSql, [idProduto, idUsuario, observacao]);
+  }
+  async atualizarPedido(idPedido, novoIdProduto, novaObservacao) {
+    const conexao = await conexaoBancoDeDados.conectar();
+    const comandoSql =
+      "UPDATE pedidos SET id_produto = ($1), observacao = ($2) WHERE id_pedido = ($3)";
+    return await conexao.query(comandoSql, [
+      novoIdProduto,
+      novaObservacao,
+      idPedido,
+    ]);
+  }
+  async listarProdutos() {
+    const conexao = await conexaoBancoDeDados.conectar();
+    const comandoSql = "SELECT * FROM cardapio";
+    const listaProdutos = await conexao.query(comandoSql);
+    return listaProdutos.rows;
   }
 }
 export default new usuarioModel();

@@ -38,7 +38,6 @@ class UsuarioController {
       const listaPedidos = [];
 
       for (let pedido of pedidos) {
-        console.log(pedido);
         const produto = await usuarioModel.buscaProduto(pedido.id_produto);
         listaPedidos.push({
           nome: produto[0].nome,
@@ -57,7 +56,6 @@ class UsuarioController {
   async deletarPedido(req, res) {
     try {
       const idDoPedido = parseInt(req.params.id);
-      console.log(idDoPedido);
       const resp = await usuarioModel.deletarPedido(idDoPedido);
       res.status(500).send({ message: "Deletado com sucesso" });
     } catch (error) {
@@ -72,10 +70,46 @@ class UsuarioController {
         observacao,
         idUsuario
       );
-      console.log(retorno);
       res.status(200).send({ message: "Pedido enviado com Sucesso!" });
     } catch (error) {
       res.status(500).send({ message: `Erro ao enviar pedido - ${error}` });
+    }
+  }
+  async listarUmPedido(req, res) {
+    const idPedido = req.params.id;
+    try {
+      const pedido = await usuarioModel.listarUmPedido(idPedido);
+      const produto = await usuarioModel.buscaProduto(pedido[0].id_produto);
+      return res.status(200).send({
+        nome: produto[0].nome,
+        preco: produto[0].preco,
+        observacao: pedido[0].observacao,
+        idPedido: pedido[0].id_pedido,
+        idProduto: produto[0].id,
+      });
+    } catch (error) {
+      res.status(404).send({ message: `Pedido não encontrado - ${error}` });
+    }
+  }
+  async atualizarPedido(req, res) {
+    const { idPedido, novoIdProduto, novaObservacao } = req.body;
+    try {
+      await usuarioModel.atualizarPedido(
+        idPedido,
+        novoIdProduto,
+        novaObservacao
+      );
+      res.status(200).send({ message: "Pedido atualizado!" });
+    } catch (error) {
+      res.status(500).send({ message: `Erro ao atualizar pedido - ${error}` });
+    }
+  }
+  async listarProdutos(req, res) {
+    try {
+      const produtos = await usuarioModel.listarProdutos();
+      res.status(200).json(produtos);
+    } catch (error) {
+      res.status(500).send({ message: `Erro ao listar produtos - ${error}` });
     }
   }
 }
